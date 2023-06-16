@@ -39,7 +39,6 @@
   #password {
     padding: 6px;
     border-radius: 8px;
-    border: 2px solid rgba(0, 0, 0, 0.2);
     width: calc(100% - 20px); /* Adjust the value to make it slightly shorter on the right side */
     background-color: var(--input-field-color);
     color: #ffffff;
