@@ -6,14 +6,37 @@
   --error-color: #d93025;
 }
 
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
 html,
 body {
   height: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #0d1117;
-  color: #c9d1d9;
+  color: #366899;
   position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(-45deg, #0d1117, #12171d, #0d1117);
+  background-size: 400% 400%;
+  animation: gradientAnimation 50s linear infinite;
+  filter: blur(10px);
+  opacity: .7;
 }
 
 .signin-container {
@@ -120,6 +143,9 @@ label[for='show-password'] {
   margin: 0 0 16px;
   text-align: center;
   color: #c9d1d9;
+  opacity: 3;
+  cursor: default;
+  text-shadow: 2px 5px 4px rgba(0, 0, 0, 0.3);
 }
 
 #submit-button {

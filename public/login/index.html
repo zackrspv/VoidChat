@@ -57,6 +57,11 @@
       margin-bottom: 20px;
       font-size: 20px;
       color: #c9d1d9;
+      transition: color 0.3s ease;
+    }
+
+    .glass-effect:hover ~ .signin-header {
+      color: #000000;
     }
 
     #logout-reason {
@@ -175,6 +180,7 @@
   <script>
     const container = document.querySelector('.signin-container');
     const glassEffect = document.querySelector('.glass-effect');
+    const signinHeader = document.querySelector('.signin-header');
 
     container.addEventListener('mousemove', (e) => {
       const x = e.clientX - container.offsetLeft;
@@ -182,6 +188,16 @@
 
       glassEffect.style.left = x + 'px';
       glassEffect.style.top = y + 'px';
+
+      const loginHeaderRect = signinHeader.getBoundingClientRect();
+      const isInLoginHeader = x >= loginHeaderRect.left && x <= loginHeaderRect.right &&
+        y >= loginHeaderRect.top && y <= loginHeaderRect.bottom;
+
+      if (isInLoginHeader) {
+        signinHeader.style.color = '#000000';
+      } else {
+        signinHeader.style.color = '#c9d1d9';
+      }
     });
   </script>
 </body>

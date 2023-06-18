@@ -99,8 +99,22 @@ body {
     background-color: #1f242b;
     padding: 8px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 21px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
   }
+  
+  .message:hover {
+    transform: translateX(-10px);
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.35rem;
+    background-color: #2e353d;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 2px 26px 12px rgba(0, 0, 0, 0.1);
+  }
+  
 
 .messages-container {
   display: flex;
