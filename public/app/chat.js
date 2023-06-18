@@ -65,32 +65,39 @@ export async function joinRoom(roomname) {
 }
 
 export async function joinedRoomHandler(data) {
-    if (debugMode) console.log("joinedRoom", data);
+  if (debugMode) console.log("joinedRoom", data);
 
-    client.rooms.set(data.name, {
-        name: data.name,
-        description: data.description
-    });
+  client.rooms.set(data.name, {
+    name: data.name,
+    description: data.description,
+  });
 
-    // Add navbar channel button
-    addNavbarChannel(data.name);
+  // Add navbar channel button
+  addNavbarChannel(data.name);
 
-    // Add chatroom containers
-    let msgCont = document.createElement("div");
-    msgCont.classList.add("messages-container");
-    msgCont.setAttribute("room", data.name);
-    messagesWrapper.appendChild(msgCont);
-    
-    addMembersContainer(data.name);
-    
-    let membersRes = await makeRequest({
-        method: "get",
-        url: `${gatewayUrl}/rooms/${data.name}/members`
-    });
+  // Add chatroom containers
+  let msgCont = document.createElement("div");
+  msgCont.classList.add("messages-container");
+  msgCont.setAttribute("room", data.name);
 
-    setMembers(data.name, membersRes.data.members);
+  // Add start of conversation message
+  let startMsg = document.createElement("div");
+  startMsg.classList.add("start-conversation-message");
+  startMsg.innerText = "-- Start of the Conversation! --";
+  msgCont.appendChild(startMsg);
 
-    switchRooms(data.name);
+  messagesWrapper.appendChild(msgCont);
+
+  addMembersContainer(data.name);
+
+  let membersRes = await makeRequest({
+    method: "get",
+    url: `${gatewayUrl}/rooms/${data.name}/members`,
+  });
+
+  setMembers(data.name, membersRes.data.members);
+
+  switchRooms(data.name);
 }
 
 export async function leaveRoom(roomname) {

@@ -1,22 +1,24 @@
 import { isNil, dom, domParser } from "https://butterycode.com/static/js/utils.js@1.2";
 
 export function chatMessage(username, color, discriminator, content, timestamp) {
-    let msgContainer = document.createElement("div");
-    msgContainer.classList.add("message");
-    
-    if (!isNil(timestamp)) {
-        msgContainer.appendChild(timestampComponent(timestamp));
+    const messageContainer = document.createElement("div");
+    messageContainer.classList.add("message");
+  
+    if (timestamp !== null && timestamp !== undefined) {
+      const timestampElement = timestampComponent(timestamp);
+      messageContainer.appendChild(timestampElement);
     }
-
-    msgContainer.appendChild(userDisplay(username, color, discriminator));
-
-    let contEle = document.createElement("span");
-    contEle.classList.add("content");
-    contEle.innerText = content;
-    msgContainer.appendChild(contEle);
-
-    return msgContainer;
-}
+  
+    const userDisplayElement = userDisplay(username, color, discriminator);
+    messageContainer.appendChild(userDisplayElement);
+  
+    const contentElement = document.createElement("span");
+    contentElement.classList.add("content");
+    contentElement.innerText = content;
+    messageContainer.appendChild(contentElement);
+  
+    return messageContainer;
+  }
 
 export function userDisplay(username, color, discriminator = null, stayVisible = false) {
     let userEle = document.createElement("div");

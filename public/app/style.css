@@ -1,102 +1,157 @@
-html, body {
-    height: 100%;
-    margin: 0px;
-}
+html,
 body {
-    overflow: hidden;
-    display: flex;
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #0d1117;
+  color: #c9d1d9;
+  position: relative;
+}
+
+body {
+  overflow: hidden;
+  display: flex;
 }
 
 #app {
-    flex: 1;
-    padding: 20px;
-
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
+  flex: 1;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
 }
 
 #header {
     display: flex;
     align-items: center;
     gap: 20px;
-
-    background-color: var(--container-color);
-    border-radius: 8px;
+    background-color: #161b22;
+    border-radius: 5px;
     padding: 20px;
-    min-height: 22px;
-}
+    min-height: 30px;
+    position: relative;
+  }
+  
+  #header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -5px;
+    right: 0;
+    bottom: 0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    pointer-events: none; /* Add this line */
+  }
 
 #chat-description {
-    flex: 1;
-
-    font-size: 0.8em;
-    color: #e3e4e9;
+  flex: 1;
+  font-size: 0.8em;
 }
 
 #chatroom {
-    flex: 1;
-    overflow: hidden;
-
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .chatroom-tab {
-    background-color: var(--container-color);
-    border-radius: 8px;
-    padding: 20px;
+  background-color: #161b22;
+  border-radius: 8px;
+  padding: 20px;
 }
 
 #chat {
     min-width: 440px;
     flex: 1;
     padding: 0px;
-
     display: flex;
     flex-direction: column;
-
     overflow-y: auto;
-}
+    background-color: #161b22cc;
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  }
 
 /*
  *  Message styles
  */
 
+ 
 #messages-wrapper {
-    flex: 1;
-    padding: 20px;
-    word-break: break-all;
-    overflow: hidden scroll;
-    scroll-behavior: smooth;
+  flex: 1;
+  padding: 20px;
+  word-break: break-all;
+  overflow: hidden scroll;
+  scroll-behavior: smooth;
+  border: 1px solid #0c0f13;
 }
-.messages-container {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
+
 .message {
     display: flex;
     flex-direction: row;
     align-items: baseline;
-    gap: .35rem;
+    gap: 0.35rem;
+    background-color: #1f242b;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+.messages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
+
+.start-conversation-message {
+    text-align: center;
+    font-weight: bold;
+    color: #36363698;
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 100;
+  }
+  
+  .start-conversation-message::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -10px;
+    height: 1px;
+    border-bottom: 1px dashed #8b949e0c;
+    border-bottom-width: 2px;
+  }
+
 span.username:not(:hover) ~ span.discriminator:not(.stay-visible, :hover) {
-    display: none;
+  display: none;
 }
-span.discriminator, span.timestamp {
-    font-style: italic;
-    font-size: 0.8em;
+
+span.discriminator,
+span.timestamp {
+  font-style: italic;
+  font-size: 0.8em;
+  color: #8b949e;
 }
-span.timestamp, span.notification {
-    color: #a7a9aa;
+
+span.timestamp,
+span.notification {
+  color: #8b949e;
 }
+
 span.discriminator {
-    color: #6b6d72;
+  color: #8b949e;
 }
-span.discriminator, span.timestamp, span.username {
-    white-space: nowrap;
+
+span.discriminator,
+span.timestamp,
+span.username {
+  white-space: nowrap;
 }
 
 /*
@@ -104,37 +159,40 @@ span.discriminator, span.timestamp, span.username {
  */
 
 #message-box-wrapper {
-    background-color: var(--dark-container-color);
-    border-radius: 8px;
-    
-    display: flex;
-    flex-direction: column;
+  background-color: #161b22;
+  border-radius: 10px;
+  margin-top: auto; /* Push the message box to the bottom */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
-#message-box {
-    padding: 8px 12px;
 
-    display: flex;
-    align-items: center;
-    gap: 12px;
+#message-box {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 5; /* Push the message box to the bottom */
 }
 
 @keyframes spin {
-    100% {
-        transform: rotate(360deg);
-    }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 #message-input {
-    flex: 1;
-    padding: 8px;
-    border-radius: 8px;
-
-    background-color: var(--container-color);
-    border: none;
-    outline: none;
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #0d1117;
+  border: none;
+  outline: none;
+  color: #c9d1d9;
 }
+
 #message-input:disabled ~ #send-button {
-    cursor: not-allowed;
+  cursor: not-allowed;
 }
 
 /*
@@ -142,15 +200,17 @@ span.discriminator, span.timestamp, span.username {
  */
 
 #members-wrapper {
-    overflow: hidden scroll;
-    word-break: break-all;
-    width: 220px;
+  overflow: hidden scroll;
+  word-break: break-all;
+  width: 220px;
 }
+
 .members-container {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
+
 .member-offline {
-    opacity: 0.5;
+  opacity: 0.5;
 }
