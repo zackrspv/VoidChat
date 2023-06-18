@@ -26,6 +26,30 @@
       border: 1px solid #363638;
       border-radius: 5px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-effect {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.1) 10%,
+        rgba(255, 255, 255, 0) 70%
+      );
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .signin-container:hover .glass-effect {
+      opacity: 1;
     }
 
     .signin-header {
@@ -120,6 +144,7 @@
 </head>
 <body>
   <div class="signin-container">
+    <div class="glass-effect"></div>
     <h1 class="signin-header">Login</h1>
     <h5 id="logout-reason"></h5>
 
@@ -147,5 +172,17 @@
   </div>
   <script src="https://unpkg.com/axios@1.3.4/dist/axios.min.js"></script>
   <script type="module" src="./signin.js"></script>
+  <script>
+    const container = document.querySelector('.signin-container');
+    const glassEffect = document.querySelector('.glass-effect');
+
+    container.addEventListener('mousemove', (e) => {
+      const x = e.clientX - container.offsetLeft;
+      const y = e.clientY - container.offsetTop;
+
+      glassEffect.style.left = x + 'px';
+      glassEffect.style.top = y + 'px';
+    });
+  </script>
 </body>
 </html>
