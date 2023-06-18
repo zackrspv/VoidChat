@@ -32,9 +32,9 @@ html, body {
 
 #navbar.pulled-out {
     position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
 }
 
 #navbar.pulled-out ~ #app {

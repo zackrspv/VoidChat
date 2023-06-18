@@ -20,7 +20,7 @@ To get started with ircChat, follow these steps:
  -   PORT = <0 - 65535>
  -   TOKEN_SECRET = <128 characters>
  -   FILE_SALT = <36 characters>
- -   CLOUD_TOKEN = <cloud.butterycode.com database token>
+ -   CLOUD_TOKEN = <cloud.butterycode.com database token> (optional)
 
 
 4. Start the server: `node server.js`

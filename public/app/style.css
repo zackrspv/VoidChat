@@ -83,12 +83,16 @@ body {
 
  
 #messages-wrapper {
-  flex: 1;
-  padding: 20px;
-  word-break: break-all;
-  overflow: hidden scroll;
-  scroll-behavior: smooth;
-  border: 1px solid #0c0f13;
+    flex: 1;
+    padding: 20px;
+    word-break: break-all;
+    overflow: hidden scroll;
+    scroll-behavior: smooth;
+}
+.messages-container, .message-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .message {
@@ -141,6 +145,12 @@ body {
     border-bottom: 1px dashed #8b949e0c;
     border-bottom-width: 2px;
   }
+
+  .message-attachments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
 
 span.username:not(:hover) ~ span.discriminator:not(.stay-visible, :hover) {
   display: none;

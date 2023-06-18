@@ -10,6 +10,7 @@ import {
     getMessagesContainer,
     messageInput
 } from "./chat.js";
+import { attachmentComponent } from "./components.js";
 
 let fileData = new FormData();
 
@@ -55,6 +56,10 @@ async function uploadAttachments() {
         },
     });
 
+    for (let key of fileData.keys()) { // Clear form data
+        fileData.delete(key);
+    }
+
     if (uploadRes.status !== 200) { // TODO: do more to handle this error
         messageInput.disabled = false;
         attachBtn.classList.remove("loading");
@@ -67,11 +72,8 @@ async function uploadAttachments() {
 
     attachments.filter(attachment => attachment.success && !client.attachments.includes(attachment.path)).forEach(attachment => {
         client.attachments.push(attachment.path);
-
-        let attachmentEle = document.createElement("div");
-        attachmentEle.classList.add("attachment");
-        attachmentEle.innerText = attachment.filename;
-        attachmentBox.appendChild(attachmentEle);
+        
+        attachmentBox.appendChild(attachmentComponent(attachment.filename));
     });
     
     if (scroll) {
