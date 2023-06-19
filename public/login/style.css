@@ -20,9 +20,137 @@ body {
   height: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
-  color: #366899;
+  color: #696969;
   position: relative;
 }
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90%;
+  max-height: 90%;
+  width: 600px;
+  padding: 20px;
+  background-color: #221f3a;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  overflow-y: auto;
+  animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.popup.close {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  animation: swipeUp 0.5s ease-out;
+}
+
+
+@keyframes swipeUp {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -200%);
+  }
+}
+
+.popup::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 20px;
+  height: 20px;
+  background-color: #221f3a;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  transform: rotate(45deg);
+}
+
+.popup-content {
+  position: relative;
+}
+
+#close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#close-button::before,
+#close-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 2px;
+  background-color: #ff0000;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+#close-button::before {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+#close-button:hover::before,
+#close-button:hover::after {
+  background-color: #cc0000;
+}
+
+.popup h2 {
+  margin-top: 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.popup p {
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+  font-family: Arial, sans-serif;
+}
+
+.popup button {
+  padding: 8px 16px;
+  background-color: #ffffff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.popup button:hover {
+  background-color: #ffffff;
+}
+
+.popup button:focus {
+  outline: none;
+}
+
 
 body::before {
   content: "";
@@ -37,6 +165,29 @@ body::before {
   animation: gradientAnimation 50s linear infinite;
   filter: blur(10px);
   opacity: .7;
+}
+
+#info-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+#info-button:hover {
+  animation: bounce 1s 1;
 }
 
 .signin-container {
