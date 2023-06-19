@@ -296,6 +296,7 @@ label[for='show-password'] {
   color: #c9d1d9;
   opacity: 3;
   cursor: default;
+  user-select: none;
   text-shadow: 2px 5px 4px rgba(0, 0, 0, 0.3);
 }
 

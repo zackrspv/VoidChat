@@ -133,6 +133,8 @@ body {
     margin-bottom: 10px;
     position: relative;
     padding-left: 100;
+    user-select: none;
+    cursor: default;
   }
   
   .start-conversation-message::after {
