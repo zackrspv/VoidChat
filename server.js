@@ -4,7 +4,6 @@ import cookieParser from "cookie-parser";
 import path from "node:path";
 import http from "node:http";
 import dotenv from "dotenv";
-import { WebSocketServer } from "ws";
 import { authRoute, authenticate } from "./api/auth.js";
 import gateway from "./api/gateway.js";
 
@@ -30,7 +29,6 @@ if (enableLogging) {
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocketServer({ server });
 
 // Middleware
 app.use(express.json());
@@ -99,8 +97,8 @@ app.use(express.static(path.join(process.cwd(), "public"), {
   extensions: ['html', 'htm']
 }));
 
-// Handle API gateway
-gateway(app, wss);
+// Handle api gateway
+gateway(app);
 
 // Start the server
 server.listen(port, () => {
