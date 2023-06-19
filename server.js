@@ -9,43 +9,42 @@ import { authRoute, authenticate } from "./api/auth.js";
 import gateway from "./api/gateway.js";
 
 dotenv.config();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT ?? 8080;
 
 const app = express();
-const server = http.createServer(app);
+const server = http.Server(app);
 const wss = new WebSocketServer({ server });
 
 // Add middleware
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use((req, res, next) => {
-  res.set("allow", "*");
-  next();
+    res.set("allow", "*");
+    next();
 });
 
-// Logout route
+// Login routes
 app.get("/logout", (req, res) => {
-  res.clearCookie("token");
-  res.redirect("/login");
+    res.clearCookie("token");
+    res.redirect("/login");
 });
 
-// Auth route
+// Auth routes
 app.post("/auth", authRoute);
 
 // App routes
 app.get("/", (req, res) => {
-  res.redirect("/app");
+    res.redirect("/app");
 });
-
 app.use("/app", authenticate);
 app.use(express.static(path.join(process.cwd(), "public"), {
-  extensions: ['html', 'htm']
+    extensions: ['html', 'htm']
 }));
 
-// Handle API gateway
+// Handle api gateway
 gateway(app, wss);
 
 // Start the server
 server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
