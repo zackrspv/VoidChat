@@ -1,5 +1,6 @@
 {
   "name": "irc-chat",
+
   "version": "a-Rel-1.1.1",
   "description": "a not so simple irc-chat",
   "main": "server.js",
