@@ -17,9 +17,8 @@ To get started with ircChat, follow these steps:
 2. Install the dependencies: `npm install`
 3. Create a `.env` file in the root directory and add the following environment variables:
 
- -   PORT = <0 - 65535>
+ -   PORT = <0 - 65535> (optional, defaults to 8080)
  -   TOKEN_SECRET = <128 characters>
- -   FILE_SALT = <36 characters>
  -   CLOUD_TOKEN = <cloud.butterycode.com database token> (optional)
 
 
