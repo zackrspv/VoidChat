@@ -30,6 +30,8 @@ function showAUP() {
       <p>4.1. ircChat may update this Policy from time to time to reflect changes in the program and services or to address emerging security and legal concerns. The updated Policy will be posted on ircChat's website, and it is your responsibility to review and comply with the most recent version of the Policy.</p>
   
       <p>Copyright &copy; 2023 ircChat</p>
+      <p>Copyright &copy; 2023 ButterDebugger</p>
+      <p>Copyright &copy; 2023 HeyItsSloth</p>
     `;
   
     const popup = document.createElement('div');
