@@ -8,7 +8,7 @@
     "dev": "nodemon"
   },
   "author": "ButterDebugger",
-  "author2": "HeyItsSloth",
+  "contributor/coauthor": "HeyItsSloth",
   "license": "BD&S/MIT",
   "type": "module",
   "dependencies": {
