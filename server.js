@@ -37,6 +37,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// Security middleware
+app.use((req, res, next) => {
+  // Set security headers
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  res.setHeader("X-Frame-Options", "DENY");
+
+  // Prevent parameter pollution
+  const pollutedParams = Object.keys(req.query).filter(
+    (key) => Array.isArray(req.query[key])
+  );
+  if (pollutedParams.length > 0) {
+    return res.status(400).json({ message: "Parameter pollution detected." });
+  }
+
+  next();
+});
+
 // Request logging middleware
 app.use((req, res, next) => {
   const { url } = req;
