@@ -22,7 +22,11 @@ To get started with ircChat, follow these steps:
  -   CLOUD_TOKEN = <cloud.butterycode.com database token> (optional)
 
 
-4. Start the server: `node server.js`
+4. You can start the node.js server in 2 ways!
+ - > node server.js
+ - > node server.js -log
+ - Starting it with the `-log` flag allows the server to log all events done on the server.
+ 
 
 ## Usage
 

@@ -9,24 +9,41 @@ import { authRoute, authenticate } from "./api/auth.js";
 import gateway from "./api/gateway.js";
 
 dotenv.config();
-const port = process.env.PORT ?? 8080;
+const port = process.env.PORT || 8080;
+const enableLogging = process.argv.includes("-log");
 
 const app = express();
-const server = http.Server(app);
+const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-// Add middleware
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(bodyParser.json());
-app.use((req, res, next) => {
-    res.set("allow", "*");
+
+// Request logging middleware
+if (enableLogging) {
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
     next();
+  });
+}
+
+// CORS headers
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
 });
 
 // Login routes
 app.get("/logout", (req, res) => {
-    res.clearCookie("token");
-    res.redirect("/login");
+  res.clearCookie("token");
+  res.redirect("/login");
 });
 
 // Auth routes
@@ -34,17 +51,23 @@ app.post("/auth", authRoute);
 
 // App routes
 app.get("/", (req, res) => {
-    res.redirect("/app");
+  res.redirect("/app");
 });
+
 app.use("/app", authenticate);
 app.use(express.static(path.join(process.cwd(), "public"), {
-    extensions: ['html', 'htm']
+  extensions: ['html', 'htm']
 }));
 
-// Handle api gateway
+// Handle API gateway
 gateway(app, wss);
 
 // Start the server
 server.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
+  if (enableLogging) {
+    console.log("					***********************");
+    console.log("					** Logging is enabled **");
+    console.log("					***********************");
+  }
 });
