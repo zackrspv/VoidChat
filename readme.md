@@ -51,3 +51,4 @@ Join our Discord community to stay updated and interact with other ircChat users
 ## License
 
 ircChat is released under the [MIT License](https://raw.githubusercontent.com/HeyItsSloth/ircChatUnofficial/main/LICENSE).
+
