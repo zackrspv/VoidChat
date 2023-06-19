@@ -12,7 +12,6 @@ ircChat is a simplistic and purely anonymous chat app developed by [ButterDebugg
 ## Getting Started
 
 To get started with ircChat, follow these steps:
-
 1. Clone the repository: `git clone https://github.com/HeyItsSloth/ircChatUnofficial.git`
 2. Install the dependencies: `npm install`
 3. Create a `.env` file in the root directory and add the following environment variables:
