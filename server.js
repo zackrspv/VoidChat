@@ -11,6 +11,22 @@ import gateway from "./api/gateway.js";
 dotenv.config();
 const port = process.env.PORT || 8080;
 const enableLogging = process.argv.includes("-log");
+const filterIcons = process.argv.includes("-icons");
+const filterApp = process.argv.includes("-app");
+
+if ((filterIcons || filterApp) && !enableLogging) {
+  console.error("You must run this with -log enabled!");
+  process.exit(1);
+}
+
+let logMessage = "Logging is enabled";
+if (enableLogging) {
+  if (filterIcons) {
+    logMessage = "Icon logging is enabled";
+  } else if (filterApp) {
+    logMessage = "App logging is enabled";
+  }
+}
 
 const app = express();
 const server = http.createServer(app);
@@ -22,12 +38,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Request logging middleware
-if (enableLogging) {
-  app.use((req, res, next) => {
+app.use((req, res, next) => {
+  const { url } = req;
+  if (
+    (enableLogging && (!filterIcons && !filterApp)) ||
+    (enableLogging && filterIcons && url.startsWith("/icons")) ||
+    (enableLogging && filterApp && url.startsWith("/app"))
+  ) {
     console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
-    next();
-  });
-}
+  }
+  next();
+});
 
 // CORS headers
 app.use((req, res, next) => {
@@ -67,7 +88,7 @@ server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   if (enableLogging) {
     console.log("					***********************");
-    console.log("					** Logging is enabled **");
+    console.log(`					** ${logMessage} **`);
     console.log("					***********************");
   }
 });

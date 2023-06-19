@@ -22,11 +22,22 @@ To get started with ircChat, follow these steps:
  -   CLOUD_TOKEN = <cloud.butterycode.com database token> (optional)
 
 
-4. You can start the node.js server in 2 ways!
- - > node server.js
+4. You can start the node.js server in a couple of ways!
+ - > node server.js.
+   >
+   >
+ - With the new flagging system in the server.js file, we have a couple of new options
+
  - > node server.js -log
- - Starting it with the `-log` flag allows the server to log all events done on the server.
- 
+ - `This allows users to activate a logging feature so that all events are logged in the console`
+ ` along with this update, brings subflags like -icons or -app `
+ - > node server.js -log -app
+    >> node server.js -log -icons
+ - `this allows users to log specific application pulls, from /app or from /icons to see if there are any events not loading or icons not loading`
+
+ #### Note: If the frontend is failing to respond after starting the server, give it time, sometimes its slow with this management
+
+ ---
 
 ## Usage
 
