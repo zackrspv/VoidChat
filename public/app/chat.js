@@ -195,17 +195,10 @@ export function switchRooms(roomname) { // add ability to load other room descri
   
     client.currentRoom = roomname;
     let roomInfo = client.rooms.get(roomname);
-  
-    if (roomname === "irc") {
-      chatnameEle.innerText = "#irc";
-      chatdescEle.innerText = "Welcome to ircChat";
-      messageInput.placeholder = "Message irc";
-    } else {
-      chatnameEle.innerText = `#${roomInfo.name}`;
-      chatdescEle.innerText = roomInfo.description;
-      messageInput.placeholder = `Message ${roomInfo.name}`;
-    }
-    
+
+    chatnameEle.innerText = `#${roomInfo.name}`;
+    chatdescEle.innerText = roomInfo.description;
+    messageInput.placeholder = `Message #${roomInfo.name}`;
     messageInput.disabled = false;
   
     getMessagesContainer(roomname).classList.remove("hidden");

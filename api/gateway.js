@@ -43,11 +43,11 @@ router.post("/rooms/:roomname/join", async (req, res) => {
         if (stream === null) continue;
       
         stream.json({
-          event: "updateMember",
-          room: roomname,
-          id: req.user.id,
-          timestamp: Date.now(), // TODO: implement proper performance.now instead of Date.now
-          state: "join"
+            event: "updateMember",
+            room: roomname,
+            id: req.user.id,
+            timestamp: Date.now(),
+            state: "join"
         });
     }
 
@@ -88,7 +88,7 @@ router.post("/rooms/:roomname/leave", async (req, res) => {
             event: "updateMember",
             room: roomname,
             id: req.user.id,
-            timestamp: Date.now(), // TODO: implement proper performance.now instead of Date.now
+            timestamp: Date.now(),
             state: "leave"
         });
     }
@@ -190,8 +190,8 @@ router.post("/rooms/:roomname/message", async (req, res) => {
             room: roomname,
             content: content,
             attachments: attachments,
-            timestamp: Date.now() // TODO: implement proper performance.now instead of Date.now
-        });
+            timestamp: Date.now()
+        })
     }
 
     res.status(200).json({
@@ -340,6 +340,13 @@ router.get("/sync/me", async (req, res) => {
 
 export default function (app) {
     streams(router);
+    app.use("/api", authenticate, router);
+
+    // Create starting room
+    createRoom("wonk", "Welcome to Wonk Chat!");
+    
+    // Handle attachments
+    app.use(attachments.router);
     attachments.clean();
 
     const apiRouter = express.Router();
