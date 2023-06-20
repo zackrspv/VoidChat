@@ -3,7 +3,6 @@ import fileUpload from "express-fileupload";
 import path from "node:path";
 import fs from "node:fs";
 import { authenticate } from "../api/auth.js";
-import { generateId } from "../storage/snowflake.js";
 
 if (!fs.existsSync(path.join(process.cwd(), "storage/attachments"))) {
     fs.mkdirSync(path.join(process.cwd(), "storage/attachments"));
@@ -43,7 +42,7 @@ function saveFiles(files, uid) {
         let uploaded = [];
 
         files.forEach(file => {
-            let fileId = generateId(1n);
+            let fileId = generateId();
             let fileLoc = `attachments/${uid}/${fileId}/${file.name}`;
             let filePath = path.join(process.cwd(), "storage", fileLoc);
 
@@ -81,6 +80,15 @@ function clean() { // Clear attachments folder
             force: true
         });
     });
+}
+
+function generateId() {
+    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    let id = "";
+    while (id.length < 32) {
+        id += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return id;
 }
 
 export default {

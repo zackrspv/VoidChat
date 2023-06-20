@@ -1,5 +1,5 @@
 import express from "express";
-import streams, { getStream } from "./streams.js";
+import sockets, { getSocket } from "./sockets.js";
 import attachments from "./attachments.js";
 import { authenticate } from "./auth.js";
 import { getUserSession, createRoom, getRoom } from "../storage/data.js";
@@ -38,16 +38,16 @@ router.post("/rooms/:roomname/join", async (req, res) => {
 
     for (let id of room.members) {
         if (id === req.user.id) continue;
-      
-        let stream = getStream(id);
-        if (stream === null) continue;
-      
-        stream.json({
-          event: "updateMember",
-          room: roomname,
-          id: req.user.id,
-          timestamp: Date.now(), // TODO: implement proper performance.now instead of Date.now
-          state: "join"
+
+        let socket = getSocket(id);
+        if (socket === null) continue;
+
+        socket.json({
+            event: "updateMember",
+            room: roomname,
+            id: req.user.id,
+            timestamp: Date.now(), // TODO: make more accurate somehow
+            state: "join"
         });
     }
 
@@ -81,14 +81,14 @@ router.post("/rooms/:roomname/leave", async (req, res) => {
     for (let id of room.members) {
         if (id === req.user.id) continue;
 
-        let stream = getStream(id);
-        if (stream === null) continue;
+        let socket = getSocket(id);
+        if (socket === null) continue;
 
-        stream.json({
+        socket.json({
             event: "updateMember",
             room: roomname,
             id: req.user.id,
-            timestamp: Date.now(), // TODO: implement proper performance.now instead of Date.now
+            timestamp: Date.now(), // TODO: make more accurate somehow
             state: "leave"
         });
     }
@@ -135,7 +135,7 @@ router.post("/rooms/:roomname/create", async (req, res) => {
 
     if (room === false) return res.status(400).json({
         error: true,
-        message: "Room already exists",
+        message: "Room already exist",
         code: 305
     });
     
@@ -177,21 +177,21 @@ router.post("/rooms/:roomname/message", async (req, res) => {
     });
 
     for (let id of room.members) {
-        let stream = getStream(id);
-        if (stream === null) continue;
+        let socket = getSocket(id);
+        if (socket === null) continue;
 
-        stream.json({
+        socket.json({
             event: "message",
             author: {
-              username: req.user.username,
-              color: req.user.color,
-              discriminator: req.user.discriminator
+                username: req.user.username,
+                color: req.user.color,
+                discriminator: req.user.discriminator
             },
             room: roomname,
             content: content,
             attachments: attachments,
-            timestamp: Date.now() // TODO: implement proper performance.now instead of Date.now
-        });
+            timestamp: Date.now() // TODO: make more accurate
+        })
     }
 
     res.status(200).json({
@@ -199,121 +199,59 @@ router.post("/rooms/:roomname/message", async (req, res) => {
     });
 });
 
-const typingUsers = new Map();
+router.post("/rooms/:roomname/typing", (req, res) => {
+    let { roomname } = req.params;
 
-router.post("/rooms/:roomname/typing", async (req, res) => {
-    const { roomname } = req.params;
-
-    const userSession = await getUserSession(req.user.id);
-
-    if (!userSession.rooms.has(roomname)) {
-        return res.status(400).json({
-            error: true,
-            message: "Cannot send typing notification in a room that you are not in",
-            code: 304
-        });
-    }
-
-    const room = await getRoom(roomname);
-
-    if (room === null) {
-        return res.status(400).json({
-            error: true,
-            message: "Room doesn't exist",
-            code: 303
-        });
-    }
-
-    const { typing } = req.body;
-
-    if (typing) {
-        // User started typing
-        typingUsers.set(req.user.id, roomname);
-    } else {
-        // User stopped typing
-        typingUsers.delete(req.user.id);
-    }
-
-    // Broadcast typing status to all room members
-    for (const id of room.members) {
-        if (id === req.user.id) continue;
-
-        const stream = getStream(id);
-        if (stream === null) continue;
-
-        stream.json({
-            event: "typing",
-            room: roomname,
-            user: {
-                id: req.user.id,
-                username: req.user.username
-            },
-            typing: typing
-        });
-    }
-
-    res.status(200).json({
-        success: true
-    });
+    // TODO: finish this
 });
 
 router.get("/users", async (req, res) => {
     let { ids, subscribe } = req.query;
 
-    if (typeof ids !== "string") {
-        return res.status(400).json({
-            error: true,
-            message: "Missing query string",
-            code: 102
-        });
-    }
+    if (typeof ids !== "string") return res.status(400).json({
+        error: true,
+        message: "Missing query string",
+        code: 102
+    });
 
     let sessionIds = ids.split(",");
 
     if (typeof subscribe == "string") {
         switch (subscribe) {
             case "yes":
-                sessionIds.forEach((id) => {
+                sessionIds.forEach(id => {
                     let subscribers = userSubscriptions.get(id) ?? new Set();
                     subscribers.add(req.user.id);
                     userSubscriptions.set(id, subscribers);
                 });
                 break;
             case "no":
-                sessionIds.forEach((id) => {
+                sessionIds.forEach(id => {
                     let subscribers = userSubscriptions.get(id) ?? new Set();
                     subscribers.delete(req.user.id);
                     userSubscriptions.set(id, subscribers);
                 });
                 break;
             default:
-                return res.status(400).json({
-                    error: true,
-                    message: "Invalid 'subscribe' value",
-                    code: 401
-                });
+                break;
         }
     }
 
-    let userSessions = await Promise.all(
-        sessionIds.map((id) => {
-            return getUserSession(id);
-        })
-    );
+    let userSessions = await Promise.all(sessionIds.map((id) => {
+        return getUserSession(id);
+    }));
 
     let users = userSessions.reduce((arr, user) => {
-        if (user !== null) {
-            arr.push({
-                id: user.id,
-                username: user.username,
-                discriminator: user.discriminator,
-                color: user.color,
-                offline: user.offline
-            });
-        }
+        if (user !== null) arr.push({
+            id: user.id,
+            username: user.username,
+            discriminator: user.discriminator,
+            color: user.color,
+            offline: user.offline
+        });
         return arr;
     }, []);
-
+    
     res.status(200).json({
         users: users
     });
@@ -330,7 +268,7 @@ router.get("/sync/me", async (req, res) => {
         rooms[roomname] = {
             name: room.name,
             description: room.description
-        };
+        }
     }
 
     res.status(200).json({
@@ -338,16 +276,16 @@ router.get("/sync/me", async (req, res) => {
     });
 });
 
-export default function (app) {
-    streams(router);
+export default function(app, wss) {
+    sockets(wss, router);
+    app.use("/api", authenticate, router);
+
+    // Create starting room
+    createRoom("irc", "Welcome to ircChat!");
+    
+    // Handle attachments
+    app.use(attachments.router); // TODO: move this under the api router
     attachments.clean();
-
-    const apiRouter = express.Router();
-    apiRouter.use(authenticate);
-    apiRouter.use(router);
-
-    app.use("/api", apiRouter);
-    app.use(attachments.router);
 }
 
 function isValidRoomname(roomname) {
@@ -355,9 +293,8 @@ function isValidRoomname(roomname) {
     if (
         roomname.length < 3 ||
         roomname.length > 16 ||
-        roomname.replace(roomRegex, "").length !== 0
-    )
-        return false;
+        roomname.replace(roomRegex, '').length !== 0
+    ) return false;
     return true;
 }
 

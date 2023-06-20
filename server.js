@@ -51,13 +51,6 @@ app.use(helmet({
   xssFilter: true
 }));
 
-// Limit repeated requests from the same IP address using Express Rate Limit middleware
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
-
 // Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -76,25 +69,25 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS headers to allow cross-origin requests
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-
 // Logout route to clear authentication token
 app.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.redirect("/login");
 });
 
-// Authentication routes
-app.post("/api/auth", authRoute);
+// Rate limiter middleware for /api/auth route
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  handler: (req, res) => {
+    const clientIp = req.ip;
+    // console.log(`[${clientIp}] is being rate limited!`);   view client ip thats being rate limited, for debugging only
+    res.status(429).json({ error: 'Too many requests' });  // Too many requests error on the users side.
+  }
+});
+
+// Apply rate limiter middleware to /api/auth route
+app.post("/api/auth", authLimiter, authRoute);
 
 // Main app route to redirect to the app's home page
 app.get("/", (req, res) => {
@@ -112,35 +105,6 @@ app.use(express.static(path.join(process.cwd(), "public"), {
 // Handle API gateway
 gateway(app);
 
-// Server-sent events (SSE) route to refresh connected clients
-app.get("/refresh", (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-
-  res.write(": comment\n\n");
-
-  const client = {
-    id: Date.now(),
-    res,
-  };
-  clients.push(client);
-
-  req.on("close", () => {
-    const index = clients.findIndex((c) => c.id === client.id);
-    if (index !== -1) {
-      clients.splice(index, 1);
-    }
-  });
-});
-
-// Function to send refresh event to connected clients
-function sendRefreshEvent() {
-  clients.forEach((client) => {
-    client.res.write(`event: refresh\n\n`);
-  });
-}
-
 // Start the server
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
@@ -149,7 +113,4 @@ server.listen(port, () => {
     console.log(`** ${logMessage} **`);
     console.log("***********************");
   }
-
-  // Send refresh event to connected clients when the server restarts
-  sendRefreshEvent();
 });
