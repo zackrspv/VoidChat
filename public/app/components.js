@@ -6,7 +6,7 @@ export function chatMessage(username, color, discriminator, content, timestamp, 
   
     let msgEle = document.createElement("div");
     msgEle.classList.add("message");
-  
+      
     if (!isNil(timestamp)) {
       msgEle.appendChild(timestampComponent(timestamp));
     }
