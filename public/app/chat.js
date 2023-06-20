@@ -65,40 +65,53 @@ export async function joinRoom(roomname) {
 }
 
 export async function joinedRoomHandler(data) {
-  if (debugMode) console.log("joinedRoom", data);
-
-  client.rooms.set(data.name, {
-    name: data.name,
-    description: data.description,
-  });
-
-  // Add navbar channel button
-  addNavbarChannel(data.name);
-
-  // Add chatroom containers
-  let msgCont = document.createElement("div");
-  msgCont.classList.add("messages-container");
-  msgCont.setAttribute("room", data.name);
-
-  // Add start of conversation message
-  let startMsg = document.createElement("div");
-  startMsg.classList.add("start-conversation-message");
-  startMsg.innerText = "-- Start of the Conversation! --";
-  msgCont.appendChild(startMsg);
-
-  messagesWrapper.appendChild(msgCont);
-
-  addMembersContainer(data.name);
-
-  let membersRes = await makeRequest({
-    method: "get",
-    url: `${gatewayUrl}/rooms/${data.name}/members`,
-  });
-
-  setMembers(data.name, membersRes.data.members);
-
-  switchRooms(data.name);
-}
+    if (debugMode) console.log("joinedRoom", data);
+  
+    client.rooms.set(data.name, {
+      name: data.name,
+      description: data.description,
+    });
+  
+    // Add navbar channel button
+    if (getNavbarChannel(data.name) === null) addNavbarChannel(data.name);
+  
+    // Add chatroom containers
+    if (getMessagesContainer(data.name) === null) addMessagesContainer(data.name);
+    if (getMembersContainer(data.name) === null) addMembersContainer(data.name);
+  
+    let membersRes = await makeRequest({
+      method: "get",
+      url: `${gatewayUrl}/rooms/${data.name}/members`,
+    });
+  
+    // Add start of conversation message
+    let startMsg = document.createElement("div");
+    startMsg.classList.add("start-conversation-message");
+    startMsg.innerText = "-- Start of the Conversation! --";
+  
+    let msgCont = getMessagesContainer(data.name);
+    if (msgCont === null) {
+      msgCont = document.createElement("div");
+      msgCont.classList.add("messages-container");
+      msgCont.setAttribute("room", data.name);
+      msgCont.appendChild(startMsg);
+  
+      messagesWrapper.appendChild(msgCont);
+    } else {
+      msgCont.appendChild(startMsg);
+    }
+  
+    addMembersContainer(data.name);
+  
+    membersRes = await makeRequest({
+      method: "get",
+      url: `${gatewayUrl}/rooms/${data.name}/members`,
+    });
+  
+    setMembers(data.name, membersRes.data.members);
+  
+    switchRooms(data.name);
+  }
 
 export async function leaveRoom(roomname) {
     let leaveRes = await makeRequest({
@@ -136,12 +149,23 @@ export function addChatElement(ele, roomname = null) {
     }
 }
 
+export function addMessagesContainer(roomname) {
+    let msgCont = document.createElement("div");
+    msgCont.classList.add("messages-container");
+    msgCont.setAttribute("room", roomname);
+    messagesWrapper.appendChild(msgCont);
+}
+
 export function getMessagesContainer(roomname = null) {
     return messagesWrapper.querySelector(`.messages-container[room="${roomname === null ? client.currentRoom : roomname}"]`);
 }
 
+export function getAllMessagesContainers() {
+    return messagesWrapper.querySelectorAll(".messages-container");
+}
+
 export function switchRooms(roomname) {
-    messagesWrapper.querySelectorAll(".messages-container").forEach(ele => {
+    getAllMessagesContainers().forEach(ele => {
         ele.classList.add("hidden");
     });
     getAllMembersContainers().forEach(ele => {
