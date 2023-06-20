@@ -8,9 +8,12 @@ import {
 import {
     isAtBottomOfMessages,
     getMessagesContainer,
-    messageInput
+    unlockChat,
+    lockChat,
+    isChatLocked
 } from "./chat.js";
 import { attachmentComponent } from "./components.js";
+import showAlert from "./alert.js";
 
 let fileData = new FormData();
 
@@ -24,26 +27,28 @@ attachBtn.addEventListener("click", () => {
         messages.style["scroll-behavior"] = "";
     }
 
-    let filesInput = document.createElement("input");
-    filesInput.type = "file";
-    filesInput.name = "files";
-    filesInput.multiple = true;
+    if (!isChatLocked()) {
+        let filesInput = document.createElement("input");
+        filesInput.type = "file";
+        filesInput.name = "files";
+        filesInput.multiple = true;
 
-    filesInput.click();
+        filesInput.click();
 
-    filesInput.addEventListener("change", () => {
-        for (let i = 0; i < filesInput.files.length; i++) {
-            fileData.append("files", filesInput.files.item(i));
-        }
-        filesInput.remove();
-        uploadAttachments();
-    });
+        filesInput.addEventListener("change", () => {
+            for (let i = 0; i < filesInput.files.length; i++) {
+                fileData.append("files", filesInput.files.item(i));
+            }
+            filesInput.remove();
+            uploadAttachments();
+        });
+    }
 });
 
 async function uploadAttachments() {
-    if (messageInput.disabled) return;
+    if (isChatLocked()) return;
 
-    messageInput.disabled = true;
+    lockChat()
     attachBtn.classList.add("loading");
 
     let uploadRes = await axios({
@@ -60,9 +65,10 @@ async function uploadAttachments() {
         fileData.delete(key);
     }
 
-    if (uploadRes.status !== 200) { // TODO: do more to handle this error
-        messageInput.disabled = false;
+    if (uploadRes.status !== 200) {
+        unlockChat();
         attachBtn.classList.remove("loading");
+        showAlert("Failed to upload attachments", 2500);
         return;
     }
 
@@ -82,7 +88,7 @@ async function uploadAttachments() {
         messages.style["scroll-behavior"] = "";
     }
     
-    messageInput.disabled = false;
+    unlockChat();
     attachBtn.classList.remove("loading");
 }
 

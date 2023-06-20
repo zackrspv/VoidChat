@@ -3,8 +3,8 @@ const sendButton = document.getElementById("send-button");
 const chatnameEle = document.getElementById("chat-name");
 const chatdescEle = document.getElementById("chat-description");
 const messageBox = document.getElementById("message-box");
-export const messageInput = document.getElementById("message-input");
-import { makeRequest, gatewayUrl } from "./comms.js";
+const messageInput = document.getElementById("message-input");
+const attachBtn = document.getElementById("attach-button");
 
 import {
     clearAttachmentsBox
@@ -31,14 +31,25 @@ import {
     debugMode
 } from "./client.js";
 
-import { receiver } from "./comms.js";
+import { receiver, makeRequest, gatewayUrl } from "./comms.js";
+import showAlert from "./alert.js";
+
+let isLocked = false;
 
 export function unlockChat() {
     messageInput.disabled = false;
+    attachBtn.classList.remove("disabled");
+    isLocked = false;
 }
 
 export function lockChat() {
     messageInput.disabled = true;
+    attachBtn.classList.add("disabled");
+    isLocked = true;
+}
+
+export function isChatLocked() {
+    return isLocked;
 }
 
 export async function joinRoom(roomname) { // TODO: handle the error when leaving a room | This has been taken care of
@@ -53,25 +64,22 @@ export async function joinRoom(roomname) { // TODO: handle the error when leavin
     if (joinRes.status === 200) {
       joinedRoomHandler(joinRes.data);
     } else if (joinRes.status === 400) {
-      if (joinRes.data.code === 303) { // Room doesn't exist
-        if (debugMode) console.log("creating room", roomname);
-  
-        let createRes = await makeRequest({
-          method: "post",
-          url: `${gatewayUrl}/rooms/${roomname}/create`,
-          headers: {
-            "Content-Type": "application/json" // Add Content-Type header
-          }
-        });
-  
-        if (createRes.status === 200 && createRes.data.success) {
-          joinRoom(roomname);
+        if (joinRes.data.code === 303) { // Room doesn't exist
+            if (debugMode) console.log("creating room", roomname);
+
+            let createRes = await makeRequest({
+                method: "post",
+                url: `${gatewayUrl}/rooms/${roomname}/create`
+            });
+
+            if (!(createRes.status === 200 && createRes.data.success)) return showAlert("Failed to create new room", 2500);
+
+            joinRoom(roomname);
         } else {
-          console.error("Error creating room:", createRes.data.error);
+            showAlert("Failed to join room", 2500);
         }
       }
     }
-}
 
 export async function joinedRoomHandler(data) {
     if (debugMode) console.log("joinedRoom", data);
@@ -132,27 +140,22 @@ export async function joinedRoomHandler(data) {
 export async function leaveRoom(roomname) { // TODO: handle the error when leaving a room | This has been taken care of
     let leaveRes = await makeRequest({
         method: "post",
-        url: `${gatewayUrl}/rooms/${roomname}/leave`,
-        headers: {
-          "Content-Type": "application/json" // Add Content-Type header
-        }
-      });
-    
-    if (leaveRes.status === 200 && leaveRes.data.success) {
-        client.rooms.delete(roomname);
-    
-        getNavbarChannel(roomname).remove();
-        getMessagesContainer(roomname).remove();
-        getMembersContainer(roomname).remove();
-    
-        if (client.rooms.size === 0) {
-            chatnameEle.innerText = "";
-            chatdescEle.innerText = "";
-            messageInput.placeholder = "Message no one";
-            messageInput.disabled = true;
-        } else {
-            switchRooms(client.rooms.entries().next().value[1].name);
-        }
+        url: `${gatewayUrl}/rooms/${roomname}/leave`
+    });
+
+    if (!(leaveRes.status === 200 && leaveRes.data.success)) return showAlert("Failed to leave room", 2500);
+
+    client.rooms.delete(roomname);
+
+    getNavbarChannel(roomname).remove();
+    getMessagesContainer(roomname).remove();
+    getMembersContainer(roomname).remove();
+
+    if (client.rooms.size == 0) {
+        chatnameEle.innerText = "";
+        chatdescEle.innerText = "";
+        messageInput.placeholder = `Message no one`;
+        lockChat();
     } else {
         console.error("Error leaving room:", leaveRes.data.error);
     }
@@ -199,8 +202,6 @@ export function switchRooms(roomname) { // add ability to load other room descri
     chatnameEle.innerText = `#${roomInfo.name}`;
     chatdescEle.innerText = roomInfo.description;
     messageInput.placeholder = `Message #${roomInfo.name}`;
-    messageInput.disabled = false;
-  
     getMessagesContainer(roomname).classList.remove("hidden");
     getMembersContainer(roomname).classList.remove("hidden");
   }
@@ -234,35 +235,22 @@ async function sendMessage() {
     messageInput.value = "";
   
     clearAttachmentsBox();
-  
-    try {
-      const messageRes = await makeRequest({
+
+    let messageRes = await makeRequest({
         method: "post",
         url: `${gatewayUrl}/rooms/${client.currentRoom}/message`,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({
-          content: content,
-          attachments: client.attachments,
-        }),
-      });
-  
-      if (messageRes.status === 200 && messageRes.data.success) {
-        // Message sent successfully
-        client.attachments = [];
-      } else {
-        // Handle error response
-        console.error("Error sending message:", messageRes.data.error);
-        window.location.reload(); // Reload the page
-      }
-    } catch (error) {
-      console.error("Error sending message:", error);
-      window.location.reload(); // Reload the page
-    }
-  }
-  
-  receiver.addEventListener("message", ({ detail }) => {
+        data: {
+            content: content,
+            attachments: client.attachments
+        }
+    });
+
+    if (messageRes.status !== 200) return showAlert("Failed to send message", 2500);
+
+    client.attachments = [];
+}
+
+receiver.addEventListener("message", ({ detail }) => {
     if (debugMode) console.log("message", detail);
   
     if (detail.command === "restart") {
