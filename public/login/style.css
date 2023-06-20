@@ -8,6 +8,19 @@ body{
   height:100vh;
   margin:0
 }
+.signin-header{
+  z-index: 1;
+  font-size:30px;
+  margin:0 0 16px;
+  text-align:center;
+  color:#c9d1d9;
+  opacity:1;
+  cursor:default;
+  user-select:none;
+  text-shadow:2px 5px 4px rgba(0,0,0,0.3)
+}
+
+
 .signin-container {
   width: 300px;
   padding: 48px 36px;
@@ -33,24 +46,14 @@ body{
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: -12389;
   backdrop-filter: blur(4px);
 }
-
 
 .signin-container:hover .glass-effect {
   opacity: 1;
 }
-.signin-header{
-  text-align:center;
-  margin-bottom:20px;
-  font-size:20px;
-  color:#c9d1d9;
-  transition:color .3s ease;
-  user-select:false
-}
-.glass-effect:hover ~ .signin-header{
-  color:#000
-}
+
 #logout-reason{
   text-align:center;
   color:#d93025;
@@ -334,16 +337,7 @@ label[for='show-password']{
 #logout-reason:empty{
   display:none
 }
-.signin-header{
-  font-size:30px;
-  margin:0 0 16px;
-  text-align:center;
-  color:#c9d1d9;
-  opacity:3;
-  cursor:default;
-  user-select:none;
-  text-shadow:2px 5px 4px rgba(0,0,0,0.3)
-}
+
 #submit-button{
   margin:12px 0 0;
   align-self:center;
