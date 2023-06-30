@@ -12,7 +12,7 @@ ircChat is a simplistic and purely anonymous chat app developed by [ButterDebugg
 ## Getting Started
 
 To get started with ircChat, follow these steps:
-1. Clone the repository: `git clone https://github.com/HeyItsSloth/ircChatUnofficial.git`
+1. Clone the repository: `git clone https://github.com/HeyItsSloth/ircChat.git`
 2. Install the dependencies: `npm install`
 3. Create a `.env` file in the root directory and add the following environment variables:
 
@@ -49,7 +49,7 @@ We welcome contributions to ircChat. To contribute, please follow these guidelin
 
 ## Support
 
-If you have any questions, issues, or suggestions, please feel free to [open an issue](https://github.com/HeyItsSloth/ircChatUnofficial/issues).
+If you have any questions, issues, or suggestions, please feel free to [open an issue](https://github.com/HeyItsSloth/ircChat/issues).
 
 ## Discord
 
@@ -59,4 +59,4 @@ Join our Discord community to stay updated and interact with other ircChat users
 
 ## License
 
-ircChat is released under the [MIT License](https://raw.githubusercontent.com/HeyItsSloth/ircChatUnofficial/main/LICENSE).
+ircChat is released under the [MIT License](https://raw.githubusercontent.com/HeyItsSloth/ircChatl/main/LICENSE).
