@@ -13,13 +13,13 @@
   <div id="info-button" class="bounce">
     <img id="navbar-info-button" class="no-select no-drag" src="../icons/info.png" alt="Info" width="28" height="28">
   </div>  
-  <div class="signin-container">
+  <div class="signin-container" data-tilt data-tilt-max="1" data-tilt-speed="400" data-tilt-perspective="400">
     <h1 class="signin-header">Login</h1>
     <div class="glass-effect"></div>
     <h5 id="logout-reason"></h5>
 
     <form id="signin-form">
-      <div class="input-field" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-perspective="500">
+      <div class="input-field">
         <input type="text" name="username" id="username" minlength="3" maxlength="16" pattern="[a-zA-Z0-9_]*" required/>
         <legend>Username</legend>
       </div>
