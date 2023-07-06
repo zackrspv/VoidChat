@@ -22,6 +22,7 @@
     "express-rate-limit": "^6.7.0",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.0",
+    "open": "^9.1.0",
     "uws": "^200.0.0",
     "ws": "^8.13.0"
   },

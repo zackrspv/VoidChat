@@ -8,13 +8,13 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { authRoute, authenticate } from "./api/auth.js";
 import gateway from "./api/gateway.js";
+import open from 'open';
 
 dotenv.config();
 const port = process.env.PORT || 8080;
 const enableLogging = process.argv.includes("-log");
 const filterIcons = process.argv.includes("-icons");
 const filterApp = process.argv.includes("-app");
-
 // Check if logging flag is enabled
 if ((filterIcons || filterApp) && !enableLogging) {
   console.error("You must run this with -log enabled!");
@@ -107,6 +107,7 @@ gateway(app);
 
 // Start the server
 server.listen(port, () => {
+  open(`http://localhost:${port}`);
   console.log(`Server is running on port ${port}`);
   if (enableLogging) {
     console.log("***********************");
