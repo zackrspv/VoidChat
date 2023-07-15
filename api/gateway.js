@@ -52,8 +52,7 @@ router.post("/rooms/:roomname/join", async (req, res) => {
 
     res.status(200).json({
         name: room.name,
-        description: room.description,
-        success: true
+        description: room.description
     });
 });
 
@@ -117,8 +116,7 @@ router.get("/rooms/:roomname/members", async (req, res) => {
     });
 
     res.status(200).json({
-        members: Array.from(room.members),
-        success: true
+        members: Array.from(room.members)
     });
 });
 
@@ -314,8 +312,7 @@ router.get("/users", async (req, res) => {
     }, []);
 
     res.status(200).json({
-        users: users,
-        success: true
+        users: users
     });
 });
 
@@ -334,8 +331,7 @@ router.get("/sync/client", async (req, res) => {
     }
 
     res.status(200).json({
-        rooms: rooms,
-        success: true
+        rooms: rooms
     });
 });
 

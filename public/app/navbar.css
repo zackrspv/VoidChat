@@ -27,14 +27,10 @@ html, body {
 }
 
 .navbar-spacer {
-    min-height: 8px;
-    flex: 1;
-    border-top: 1px solid rgba(155, 155, 155, 0.1);
-    border-bottom: 1px solid rgba(155, 155, 155, 0.1);
-    margin: 4px 8px;
+    flex-grow: 1; /* Use flex-grow instead of flex */
 }
 
-#navbar.open {
+#navbar.pulled-out {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -49,22 +45,16 @@ html, body {
 }
 
 #navbar-channels {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 3px;
-    
-    padding: 8px 0px 4px 0px;
+    margin-top: 8px;
     overflow: hidden scroll;
 }
 
 #navbar-bars {
     display: none;
-    margin-right: 20px;
 }
 
 @media screen and (max-width: 980px) {
-    #navbar:not(.open) {
+    #navbar:not(.pulled-out) {
         display: none;
     }
     #navbar-bars {
@@ -76,7 +66,7 @@ html, body {
     padding: 8px 12px;
     transition: background-color 0.1s ease-in-out;
     cursor: pointer;
-    border-radius: 0px 16px 16px 0px;
+    border-radius: 0 12px 12px 0;
     gap: 8px;
     display: flex;
     flex-direction: row;
@@ -84,97 +74,43 @@ html, body {
     align-items: center;
 }
 
-.navbar-channel.active, .navbar-channel:hover {
-    background-color: rgba(0, 0, 0, 0.15);
-}
 .navbar-channel:hover {
     background-color: #161b22;
 }
 
 .navbar-controls {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    padding: 4px 0px 8px 0px;
-    overflow: hidden scroll;
-    gap: 3px;
-}
-.navbar-control {
-    padding: 8px 12px;
-    transition: background-color 0.1s ease-in-out;
-    cursor: pointer;
-    border-radius: 0px 16px 16px 0px;
-    gap: 8px;
-
-    display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    align-items: center;
-}
-.navbar-control:hover {
-    background-color: rgba(0, 0, 0, 0.15);
-}
-.navbar-control:active {
-    background-color: rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    gap: 12px;
 }
 
-#join-room-modal.open {
-    display: flex;
-    flex-direction: column;
-    gap: 26px;
-
-    background-color: var(--dark-container-color);
-    box-shadow: rgb(0 0 0 / 25%) -1px 1px 14px 1px;
-    padding: 48px 36px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-}
-#join-room-header {
-    font-size: 26px;
-    margin: 0px;
-    text-align: center;
-}
-.join-room-container {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-}
-#join-room-input {
+#navbar-join-room {
+    width: 100%;
     padding: 1px 4px;
     border-radius: 8px;
     transition: border-color 0.3s ease;
 }
-#join-room-input:invalid {
+
+#navbar-join-room:invalid {
     border-color: #d93025;
     border-style: dashed;
 }
-#join-room-button {
+
+#navbar-join-room-button,
+#navbar-logout-button {
     height: 28px;
     cursor: pointer;
 }
 
-.nav-tag {
-    cursor: pointer;
-    height: 16px;
-    width: 16px;
-}
-.nav-control-text {
-    flex: 1;
-    color: var(--secondary-text-color);
-    word-break: break-all;
-    font-size: 14px;
-}
-
 .room-name {
-    flex: 1;
     font-weight: 600;
     word-break: break-all;
 }
 
 .room-close {
     filter: saturate(0);
-    transition: filter 0.1s ease-in-out;
     cursor: pointer;
     height: 22px;
     transition: border-color 0.3s ease;
