@@ -1,5 +1,6 @@
 const messagesWrapper = document.getElementById("messages-wrapper");
 const sendButton = document.getElementById("send-button");
+const chattagEle = document.getElementById("chat-tag");
 const chatnameEle = document.getElementById("chat-name");
 const chatdescEle = document.getElementById("chat-description");
 const messageBox = document.getElementById("message-box");
@@ -12,6 +13,7 @@ import {
 } from "./attachments.js";
 import {
     addNavbarChannel,
+    getAllNavbarChannels,
     getNavbarChannel
 } from "./navbar.js";
 import {
@@ -56,7 +58,7 @@ export function isChatLocked() {
     return isLocked;
 }
 
-export async function joinRoom(roomname) { // TODO: handle the error when leaving a room | This has been taken care of
+export async function joinRoom(roomname, suppressAlert = false) {
     let joinRes = await makeRequest({
       method: "post",
       url: `${gatewayUrl}/rooms/${roomname}/join`,
@@ -66,24 +68,31 @@ export async function joinRoom(roomname) { // TODO: handle the error when leavin
     });
   
     if (joinRes.status === 200) {
-      joinedRoomHandler(joinRes.data);
-    } else if (joinRes.status === 400) {
-        if (joinRes.data.code === 303) { // Room doesn't exist
-            if (debugMode) console.log("creating room", roomname);
-
-            let createRes = await makeRequest({
-                method: "post",
-                url: `${gatewayUrl}/rooms/${roomname}/create`
-            });
-
-            if (!(createRes.status === 200 && createRes.data.success)) return showAlert("Failed to create new room", 2500);
-
-            joinRoom(roomname);
-        } else {
-            showAlert("Failed to join room", 2500);
-        }
-      }
+        joinedRoomHandler(joinRes.data);
+    } else {
+        if (!suppressAlert) showAlert("Failed to join room", 2500);
     }
+
+    return joinRes.data;
+}
+
+export async function createRoom(roomname, suppressAlert = false) {
+    if (debugMode) console.log("creating room", roomname);
+
+    let createRes = await makeRequest({
+        method: "post",
+        url: `${gatewayUrl}/rooms/${roomname}/create`
+    });
+
+    if (!(createRes.status === 200 && createRes.data.success)) {
+        if (!suppressAlert) showAlert("Failed to create new room", 2500);
+        return false;
+    }
+
+    joinRoom(roomname);
+
+    return true;
+}
 
 export async function joinedRoomHandler(data) {
     if (debugMode) console.log("joinedRoom", data);
@@ -156,6 +165,8 @@ export async function leaveRoom(roomname) { // TODO: handle the error when leavi
     getMembersContainer(roomname).remove();
 
     if (client.rooms.size == 0) {
+        chattagEle.classList.add("hidden");
+        chattagEle.src = "";
         chatnameEle.innerText = "";
         chatdescEle.innerText = "";
         messageInput.placeholder = "Message no one";
@@ -192,9 +203,12 @@ export function getAllMessagesContainers() {
     return messagesWrapper.querySelectorAll(".messages-container");
 }
 
-export function switchRooms(roomname) { // add ability to load other room descriptions
-    getAllMessagesContainers().forEach((ele) => {
-      ele.classList.add("hidden");
+export function switchRooms(roomname) {
+    getAllNavbarChannels().forEach(ele => {
+        ele.classList.remove("active");
+    });
+    getAllMessagesContainers().forEach(ele => {
+        ele.classList.add("hidden");
     });
     getAllMembersContainers().forEach((ele) => {
       ele.classList.add("hidden");
@@ -203,9 +217,13 @@ export function switchRooms(roomname) { // add ability to load other room descri
     client.currentRoom = roomname;
     let roomInfo = client.rooms.get(roomname);
 
-    chatnameEle.innerText = `#${roomInfo.name}`;
+    chattagEle.classList.remove("hidden");
+    chattagEle.src = "/icons/hashtag-solid.svg";
+    chatnameEle.innerText = `${roomInfo.name}`;
     chatdescEle.innerText = roomInfo.description;
     messageInput.placeholder = `Message #${roomInfo.name}`;
+
+    getNavbarChannel(roomname).classList.add("active");
     getMessagesContainer(roomname).classList.remove("hidden");
     getMembersContainer(roomname).classList.remove("hidden");
   }
