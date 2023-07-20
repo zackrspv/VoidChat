@@ -4,6 +4,7 @@ import path from "node:path";
 import http from "node:http";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import bodyParser from "body-parser";
 import rateLimit from "express-rate-limit";
 import { authRoute, authenticate } from "./api/auth.js";
 import gateway from "./api/gateway.js";
@@ -51,8 +52,8 @@ app.use(helmet({
 }));
 
 // Middleware for parsing JSON and URL-encoded data
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Middleware for logging incoming requests

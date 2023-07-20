@@ -173,14 +173,10 @@ html, body {
 
 .room-close {
     filter: saturate(0);
-    transition: filter 0.1s ease-in-out;
-    cursor: pointer;
     height: 22px;
-    transition: border-color 0.3s ease;
+    transition: filter 0.12s ease-in-out;
 }
 
 .room-close:hover {
-    transition: border-color 0.3s ease;
-    filter: none;
-    border-color: #d93025;
+    filter: saturate(1);
 }
