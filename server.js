@@ -15,35 +15,24 @@ const port = process.env.PORT || 8080;
 const enableLogging = process.argv.includes("-log");
 const filterIcons = process.argv.includes("-icons");
 const filterApp = process.argv.includes("-app");
-// Check if logging flag is enabled
+
 if ((filterIcons || filterApp) && !enableLogging) {
   console.error("You must run this with -log enabled!");
   process.exit(1);
 }
 
-let logMessage = "Logging is enabled";
-if (enableLogging) {
-  if (filterIcons) {
-    logMessage = "Icon logging is enabled";
-  } else if (filterApp) {
-    logMessage = "App logging is enabled";
-  }
-}
-
 const app = express();
 const server = http.createServer(app);
 
-// Store connected clients
-const clients = [];
 
 // Set security headers using Helmet middleware with relaxed options
   // CSP break images
     // https://media.discordapp.net/attachments/610384874280583178/1120691890023583817/image.png?width=1286&height=205
     // https://media.discordapp.net/attachments/610384874280583178/1120693479157284984/image.png?width=1366&height=407
-  
+    
 app.use(helmet({
-  contentSecurityPolicy: false,  // Enabling the CSP breaks the site completely. 
-  dnsPrefetchControl: true,     
+  contentSecurityPolicy: false,
+  dnsPrefetchControl: true,
   frameguard: true,
   hsts: true,
   ieNoOpen: true,
@@ -51,67 +40,62 @@ app.use(helmet({
   xssFilter: true
 }));
 
-// Middleware for parsing JSON and URL-encoded data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Middleware for logging incoming requests
-app.use((req, res, next) => {
-  const { url } = req;
-  if (
-    (enableLogging && (!filterIcons && !filterApp)) ||
-    (enableLogging && filterIcons && url.startsWith("/icons")) ||
-    (enableLogging && filterApp && url.startsWith("/app"))
-  ) {
-    console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
-  }
-  next();
-});
+if (enableLogging) {
+  const logMessage = filterIcons
+    ? "Icon logging is enabled"
+    : filterApp
+      ? "App logging is enabled"
+      : "Logging is enabled";
 
-// Logout route to clear authentication token
+  console.log("***********************");
+  console.log(`** ${logMessage} **`);
+  console.log("***********************");
+
+  app.use((req, res, next) => {
+    const { url } = req;
+    if (
+      (!filterIcons && !filterApp) ||
+      (filterIcons && url.startsWith("/icons")) ||
+      (filterApp && url.startsWith("/app"))
+    ) {
+      console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
+    }
+    next();
+  });
+}
+
 app.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.redirect("/login");
 });
 
-// Rate limiter middleware for /api/auth route
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 10,
   handler: (req, res) => {
-    const clientIp = req.ip;
-    // console.log(`[${clientIp}] is being rate limited!`);   view client ip thats being rate limited, for debugging only
-    res.status(429).json({ error: 'Too many requests' });  // Too many requests error on the users side.
+    res.status(429).json({ error: 'Too many requests' });
   }
 });
 
-// Apply rate limiter middleware to /api/auth route
 app.post("/api/auth", authLimiter, authRoute);
 
-// Main app route to redirect to the app's home page
 app.get("/", (req, res) => {
   res.redirect("/app");
 });
 
-// Middleware to authenticate app routes
 app.use("/app", authenticate);
 
-// Serve static files from the "public" directory
 app.use(express.static(path.join(process.cwd(), "public"), {
   extensions: ['html', 'htm']
 }));
 
-// Handle API gateway
 gateway(app);
 
-// Start the server
 server.listen(port, () => {
   open(`http://localhost:${port}`);
   console.log(`Server is running on port ${port}`);
-  if (enableLogging) {
-    console.log("***********************");
-    console.log(`** ${logMessage} **`);
-    console.log("***********************");
-  }
 });
