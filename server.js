@@ -9,6 +9,7 @@ import rateLimit from "express-rate-limit";
 import { authRoute, authenticate } from "./api/auth.js";
 import gateway from "./api/gateway.js";
 import open from 'open';
+import chalk from 'chalk';
 
 dotenv.config();
 const WINDOW_MS = 15 * 60 * 1000;
@@ -24,12 +25,6 @@ if ((filterIcons || filterApp) && !enableLogging) {
 
 const app = express();
 const server = http.createServer(app);
-
-
-// Set security headers using Helmet middleware with relaxed options
-  // CSP break images
-    // https://media.discordapp.net/attachments/610384874280583178/1120691890023583817/image.png?width=1286&height=205
-    // https://media.discordapp.net/attachments/610384874280583178/1120693479157284984/image.png?width=1366&height=407
 
 app.use(helmet({
   contentSecurityPolicy: false,
@@ -47,10 +42,10 @@ app.use(cookieParser());
 
 if (enableLogging) {
   const logMessage = filterIcons
-    ? "Icon logging is enabled"
+    ? chalk.cyan("Icon logging is enabled")
     : filterApp
-      ? "App logging is enabled"
-      : "Logging is enabled";
+      ? chalk.yellow("App logging is enabled")
+      : chalk.green("Logging is enabled");
 
   console.log("***********************");
   console.log(`** ${logMessage} **`);
@@ -63,7 +58,11 @@ if (enableLogging) {
       (filterIcons && url.startsWith("/icons")) ||
       (filterApp && url.startsWith("/app"))
     ) {
-      console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
+      const date = new Date().toLocaleString();
+      const method = req.method;
+      const coloredMethod = method === "GET" ? chalk.green(method) : chalk.red(method);
+      const coloredUrl = method === "GET" ? chalk.yellow(url) : chalk.cyan(url);
+      console.log(`[${chalk.gray(date)}] ${coloredMethod} ${coloredUrl}`);
     }
     next();
   });
