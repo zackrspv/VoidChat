@@ -20,16 +20,16 @@ function showAUP() {
       <h3>2. User Responsibilities</h3>
       <p>2.1. Compliance with Laws: You must comply with all applicable laws, regulations, and legal obligations while using the program and services.</p>
       <p>2.2. Lawful Use: You may only use the program and services for lawful purposes and in accordance with this Policy.</p>
-      <p>2.3. Reporting Violations: If you become aware of any violation of this Policy or any suspicious or unauthorized activity, you must immediately report it to ircChat.</p>
+      <p>2.3. Reporting Violations: If you become aware of any violation of this Policy or any suspicious or unauthorized activity, you must immediately report it to Void Chat.</p>
   
       <h3>3. Consequences of Violation</h3>
-      <p>3.1. Investigation: ircChat reserves the right to investigate any suspected violation of this Policy. This may include gathering information from users, reviewing logs and records, and cooperating with law enforcement authorities.</p>
-      <p>3.2. Enforcement Actions: In the event of a violation of this Policy, ircChat may take appropriate enforcement actions, which may include, but are not limited to, issuing warnings, suspending or terminating access to the program and services, and pursuing legal remedies.</p>
+      <p>3.1. Investigation: Void Chat reserves the right to investigate any suspected violation of this Policy. This may include gathering information from users, reviewing logs and records, and cooperating with law enforcement authorities.</p>
+      <p>3.2. Enforcement Actions: In the event of a violation of this Policy, Void Chat may take appropriate enforcement actions, which may include, but are not limited to, issuing warnings, suspending or terminating access to the program and services, and pursuing legal remedies.</p>
   
       <h3>4. Policy Updates</h3>
-      <p>4.1. ircChat may update this Policy from time to time to reflect changes in the program and services or to address emerging security and legal concerns. The updated Policy will be posted on ircChat's website, and it is your responsibility to review and comply with the most recent version of the Policy.</p>
+      <p>4.1. Void Chat may update this Policy from time to time to reflect changes in the program and services or to address emerging security and legal concerns. The updated Policy will be posted on Void Chat's website, and it is your responsibility to review and comply with the most recent version of the Policy.</p>
   
-      <p>Copyright &copy; 2023 ircChat</p>
+      <p>Copyright &copy; 2023 Void Chat</p>
       <p>Copyright &copy; 2023 ButterDebugger</p>
       <p>Copyright &copy; 2023 HeyItsSloth</p>
     `;

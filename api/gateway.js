@@ -365,7 +365,7 @@ export default function(app) {
     app.use("/api", authenticate, router);
 
     // Create starting room
-    createRoom("irc", "Welcome to ircChat!");
+    createRoom("void", "Welcome to Void Chat!");
     
     // Handle attachments
     app.use(attachments.router);

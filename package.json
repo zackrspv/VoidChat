@@ -1,7 +1,7 @@
 {
-  "name": "irc-chat",
+  "name": "void-chat",
   "version": "a-Rel-1.1.1",
-  "description": "a not so simple irc-chat",
+  "description": "Void Chat",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

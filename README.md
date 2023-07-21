@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="https://media.discordapp.net/attachments/588083425496399892/1119272186243465287/IRC3.png?width=250&height=250" alt="ircChat Logo">
+  <img src="https://media.discordapp.net/attachments/588083425496399892/1132003213109903370/void.png" alt="VoidChat Logo">
 </div>
 
-ircChat is a simplistic and purely anonymous chat app developed by [ButterDebugger](https://github.com/ButterDebugger).
+Void Chat is a simplistic and purely anonymous chat app developed by [ButterDebugger](https://github.com/ButterDebugger).
 ## Features
 
 - **Anonymity**: Chat with others without revealing your identity.
@@ -11,8 +11,8 @@ ircChat is a simplistic and purely anonymous chat app developed by [ButterDebugg
 
 ## Getting Started
 
-To get started with ircChat, follow these steps:
-1. Clone the repository: `git clone https://github.com/HeyItsSloth/ircChat.git`
+To get started with Void Chat, follow these steps:
+1. Clone the repository: `git clone https://github.com/HeyItsSloth/VoidChat.git`
 2. Install the dependencies: `npm install`
 3. Create a `.env` file in the root directory and add the following environment variables:
 
@@ -35,11 +35,11 @@ To get started with ircChat, follow these steps:
 
 ## Usage
 
-Once the server is running, open your web browser and navigate to `http://localhost:8080` to access ircChat.
+Once the server is running, open your web browser and navigate to `http://localhost:8080` to access Void Chat.
 
 ## Contributing
 
-We welcome contributions to ircChat. To contribute, please follow these guidelines:
+We welcome contributions to Void Chat. To contribute, please follow these guidelines:
 
 1. Fork the repository.
 2. Create a new branch: `git checkout -b feature/your-feature`
@@ -49,14 +49,14 @@ We welcome contributions to ircChat. To contribute, please follow these guidelin
 
 ## Support
 
-If you have any questions, issues, or suggestions, please feel free to [open an issue](https://github.com/HeyItsSloth/ircChat/issues).
+If you have any questions, issues, or suggestions, please feel free to [open an issue](https://github.com/HeyItsSloth/VoidChat/issues).
 
 ## Discord
 
-Join our Discord community to stay updated and interact with other ircChat users.
+Join our Discord community to stay updated and interact with other VoidChat users.
 
 [![Discord](https://img.shields.io/badge/Join%20Us%20on-Discord-7289DA.svg?logo=discord&logoColor=white)](https://discord.gg/TBkjPn6mHg)
 
 ## License
 
-ircChat is released under the [MIT License](https://raw.githubusercontent.com/HeyItsSloth/ircChat/main/LICENSE).
+Void Chat is released under the [MIT License](https://raw.githubusercontent.com/HeyItsSloth/VoidChat/main/LICENSE).

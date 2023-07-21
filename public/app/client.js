@@ -19,7 +19,7 @@ export let client = {
 registerEvent("open", async () => {
     await syncClient();
 
-    if (!client.rooms.has("irc")) joinRoom("irc");
+    if (!client.rooms.has("void")) joinRoom("void");
 
     await syncMemory();
 

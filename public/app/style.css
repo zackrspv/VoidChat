@@ -189,7 +189,8 @@ span.username {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-top: 5;
+  margin-top: 5px;
+  background-color: rgba(19, 17, 27, 0.397)
 }
 
 @keyframes spin {

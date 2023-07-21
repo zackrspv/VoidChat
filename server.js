@@ -11,6 +11,7 @@ import gateway from "./api/gateway.js";
 import open from 'open';
 
 dotenv.config();
+const WINDOW_MS = 15 * 60 * 1000;
 const port = process.env.PORT || 8080;
 const enableLogging = process.argv.includes("-log");
 const filterIcons = process.argv.includes("-icons");
@@ -29,7 +30,7 @@ const server = http.createServer(app);
   // CSP break images
     // https://media.discordapp.net/attachments/610384874280583178/1120691890023583817/image.png?width=1286&height=205
     // https://media.discordapp.net/attachments/610384874280583178/1120693479157284984/image.png?width=1366&height=407
-    
+
 app.use(helmet({
   contentSecurityPolicy: false,
   dnsPrefetchControl: true,
@@ -74,7 +75,7 @@ app.get("/logout", (req, res) => {
 });
 
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  WINDOW_MS,
   max: 10,
   handler: (req, res) => {
     res.status(429).json({ error: 'Too many requests' });
