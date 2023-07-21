@@ -23,8 +23,15 @@ if ((filterIcons || filterApp) && !enableLogging) {
   process.exit(1);
 }
 
+// Set security headers using Helmet middleware with relaxed options
+  // CSP break images
+    // https://media.discordapp.net/attachments/610384874280583178/1120691890023583817/image.png?width=1286&height=205
+    // https://media.discordapp.net/attachments/610384874280583178/1120693479157284984/image.png?width=1366&height=407
+
 const app = express();
 const server = http.createServer(app);
+
+
 
 app.use(helmet({
   contentSecurityPolicy: false,
